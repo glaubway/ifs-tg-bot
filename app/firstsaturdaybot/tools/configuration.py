@@ -36,8 +36,12 @@ class Config(object):
 
     def load_var_from_env(self, env_name):
         try:
-            return environ[env_name]
+            if environ[env_name] == '':
+                logger.exception(f'Environment variable {env_name} didn\' set correctly.\nPlease check .env file.')
+                raise TypeError
+            else:
+                return environ[env_name]
         except KeyError as error:
-            logger.exception(f'Environment variable {env_name} didn\' set correctly.\nPlease check docker-compose file.')
+            logger.exception(f'Environment variable {env_name} didn\' found.\nPlease check .env file.')
             raise error
            
