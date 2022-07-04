@@ -12,8 +12,8 @@ from telegram.ext import (
 user_conversation_handler = ConversationHandler(
     entry_points=[CommandHandler('start', user_start_command)],
     states={
-        SELECT_ADMIN_FEATURES: [
-            CallbackQueryHandler(select_user_feature, pattern="^" + str(SELECT_ADMIN_FEATURES) + "$")
+        SELECTING_ADMIN_ACTION: [
+            CallbackQueryHandler(select_user_feature, pattern="^" + str(SELECTING_ADMIN_ACTION) + "$")
         ],
     },
     fallbacks=[MessageHandler(filters.Regex("^Done$"), done_command)],

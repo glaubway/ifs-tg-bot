@@ -10,6 +10,7 @@ try:
     local_tz = pytz.timezone(RUNTIME_CONFIG.EVENT_TIMEZONE)
 except pytz.exceptions.UnknownTimeZoneError:
     logger.exception('Incorect timezone. Using UTC.')
+    RUNTIME_CONFIG.EVENT_TIMEZONE = 'UTC'
     local_tz = pytz.timezone('UTC')
 
 def is_firstsaturday():
