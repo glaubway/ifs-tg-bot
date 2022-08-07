@@ -1,6 +1,6 @@
 from firstsaturdaybot import RUNTIME_CONFIG
 from firstsaturdaybot.commands import *
-from firstsaturdaybot.tools.security import restricted
+from firstsaturdaybot.tools.security import restricted_admin
 from firstsaturdaybot.tools.logger import myLogger
 from telegram import (
     ReplyKeyboardRemove, 
@@ -15,7 +15,7 @@ from telegram.ext import (
 
 logger = myLogger(__name__)
 
-@restricted
+@restricted_admin
 async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text=None):
     buttons = [
         [
@@ -57,7 +57,7 @@ async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE
     context.user_data[START_OVER] = False
     return SELECTING_ADMIN_ACTION
 
-@restricted
+@restricted_admin
 async def set_event_time(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
@@ -77,7 +77,7 @@ async def set_event_time(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return TYPING_TIME_CONFIGURATION
 
-@restricted
+@restricted_admin
 async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
@@ -108,7 +108,7 @@ async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return NEXT_STAGE
 
-@restricted
+@restricted_admin
 async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
@@ -132,7 +132,7 @@ async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return NEXT_STAGE
 
 
-@restricted
+@restricted_admin
 async def incorrect_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = "Incorrect input, returning back."
     await update.message.reply_text(text=text)
@@ -141,7 +141,7 @@ async def incorrect_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return await admin_start_command(update, context)
 
-@restricted
+@restricted_admin
 async def add_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
     if not RUNTIME_CONFIG.is_user_admin(user_message):
@@ -153,7 +153,7 @@ async def add_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
     return await admin_start_command(update, context, text)
 
-@restricted
+@restricted_admin
 async def remove_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.callback_query.data
     
@@ -166,7 +166,7 @@ async def remove_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[START_OVER] = True
     await admin_start_command(update, context, text)
 
-@restricted
+@restricted_admin
 async def save_time_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_data = context.user_data
     user_message = update.message.text
@@ -181,7 +181,7 @@ async def save_time_configuration(update: Update, context: ContextTypes.DEFAULT_
     context.user_data.clear()
     return await admin_start_command(update, context, text)
 
-@restricted
+@restricted_admin
 async def save_link_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
 
@@ -192,7 +192,7 @@ async def save_link_configuration(update: Update, context: ContextTypes.DEFAULT_
     return await admin_start_command(update, context, text)
 
 
-@restricted
+@restricted_admin
 async def show_current_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     context.user_data[START_OVER] = True
     
