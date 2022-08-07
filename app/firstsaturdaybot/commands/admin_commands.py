@@ -27,8 +27,8 @@ async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE
             InlineKeyboardButton(text="Remove bot admin", callback_data=str(REMOVE_ADMIN)),
         ],
         [
-            InlineKeyboardButton(text="Set link to statistic spreadsheet", callback_data=str(SET_STATISTIC_FORM_LINK)),
-            InlineKeyboardButton(text="Set link to poral hunt spreadsheet", callback_data=str(SET_PORTAL_HUNT_SPREADSHEET_LINK)),
+            InlineKeyboardButton(text="Statistic form link", callback_data=str(SET_STATISTIC_FORM_LINK)),
+            InlineKeyboardButton(text="Portal Hunt link", callback_data=str(SET_PORTAL_HUNT_SPREADSHEET_LINK)),
         ],
         [
             InlineKeyboardButton(text="Show configuration", callback_data=str(SHOW_CURRENT_CONFIGURATION)),
@@ -112,6 +112,8 @@ async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
+    NEXT_STAGE = None
+
     if update.callback_query.data == str(SET_STATISTIC_FORM_LINK):
         text = f"Please provide new link to the Google form.\n"
         text += f"Current link: {RUNTIME_CONFIG.STATISTIC_FORM_LINK}"
@@ -168,13 +170,12 @@ async def remove_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @restricted_admin
 async def save_time_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_data = context.user_data
     user_message = update.message.text
 
-    if user_data[CURRENT_FEATURE] == str(START_EVENT_TIME):
+    if context.user_data[CURRENT_FEATURE] == str(START_EVENT_TIME):
         RUNTIME_CONFIG.set_start_time(user_message)
         text = f"The new star event time is {user_message}"
-    elif user_data[CURRENT_FEATURE] == str(END_EVENT_TIME):
+    elif context.user_data[CURRENT_FEATURE] == str(END_EVENT_TIME):
         RUNTIME_CONFIG.set_end_time(user_message)
         text = f"The new end event time is {user_message}"
     
@@ -185,7 +186,11 @@ async def save_time_configuration(update: Update, context: ContextTypes.DEFAULT_
 async def save_link_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
 
-    RUNTIME_CONFIG.set_form_link(user_message)
+    if context.user_data[CURRENT_FEATURE] == str(SET_STATISTIC_FORM_LINK):
+        RUNTIME_CONFIG.set_statistic_form_link(user_message)
+    elif context.user_data[CURRENT_FEATURE] == str(SET_PORTAL_HUNT_SPREADSHEET_LINK):
+        RUNTIME_CONFIG.set_portal_hunt_spreadsheet_link(user_message)
+    
     text = "The link have been changed."
 
     context.user_data.clear()
