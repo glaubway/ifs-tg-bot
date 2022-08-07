@@ -25,6 +25,7 @@ class Config(object):
 
     def remove_admin(self, username):
         self.RUNTIME_ADMINS.remove(username)
+        return True
 
     def set_start_time (self, time):
         self.EVENT_START_TIME = time
@@ -39,11 +40,21 @@ class Config(object):
         if username in self.RUNTIME_ADMINS or username in self.GLOBAL_ADMINS:
             return True
 
-    def list_of_admins(self):
+    def is_user_predefined_admin(self, username):
+        if username in self.GLOBAL_ADMINS:
+            return True
+
+    def show_current_admins_as_string(self):
         if self.RUNTIME_ADMINS:
             return ' '.join([*self.GLOBAL_ADMINS, *self.RUNTIME_ADMINS])
         else:
             return ' '.join(self.GLOBAL_ADMINS)
+
+    def show_current_admins_as_list(self):
+        if self.RUNTIME_ADMINS:
+            return [*self.GLOBAL_ADMINS, *self.RUNTIME_ADMINS]
+        else:
+            return self.GLOBAL_ADMINS
 
     def load_var_from_env(self, env_name):
         try:

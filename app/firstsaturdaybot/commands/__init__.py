@@ -22,8 +22,11 @@ from telegram.ext import ConversationHandler
     ADD_ADMIN,
     REMOVE_ADMIN,
     SET_FORM_LINK,
-    TYPING_CONFIGURATION,
+    TYPING_TIME_CONFIGURATION,
+    TYPING_LINK_CONFIGURATION,
+    TYPING_ADD_ADMIN,
+    TYPING_REMOVE_ADMIN,
     SHOW_CURRENT_CONFIGURATION
-)= map(chr,range(20, 28))
+)= map(chr,range(20, 31))
 
 END = ConversationHandler.END

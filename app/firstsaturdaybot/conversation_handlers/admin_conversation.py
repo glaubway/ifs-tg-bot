@@ -22,21 +22,51 @@ admin_conversation_handler = ConversationHandler(
                 stop_nested_command, 
                 pattern="^" + str(STOP_CONVERSATION) + "$")
             ],
-        TYPING_CONFIGURATION: [
+        TYPING_TIME_CONFIGURATION: [
             CallbackQueryHandler(
                 admin_start_command, 
                 pattern="^" + str(TO_START) + "$"),
             MessageHandler(
                 filters.Regex(r"^[0-2]?[0-9]\:[0-5]?[0-9]$"),
-                save_configuration
+                save_time_configuration
                 ),
             MessageHandler(
-                filters.Regex(r"^@[a-zA-Z0-9_]{5,}$"),
-                save_configuration
+                filters.TEXT & ~filters.COMMAND,
+                incorrect_input
+            )
+            ],
+        TYPING_ADD_ADMIN: [
+            CallbackQueryHandler(
+                admin_start_command, 
+                pattern="^" + str(TO_START) + "$"),
+            MessageHandler(
+                filters.Regex(r"^[a-zA-Z0-9_]{5,}$"),
+                add_admin
                 ),
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND,
+                incorrect_input
+            )
+            ],
+        TYPING_REMOVE_ADMIN: [
+            CallbackQueryHandler(
+                admin_start_command, 
+                pattern="^" + str(TO_START) + "$"),
+            CallbackQueryHandler(
+                remove_admin, 
+                pattern=r"^[a-zA-Z0-9_]{5,}$"),
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND,
+                incorrect_input
+            )
+            ],
+        TYPING_LINK_CONFIGURATION: [
+            CallbackQueryHandler(
+                admin_start_command, 
+                pattern="^" + str(TO_START) + "$"),
             MessageHandler(
                 filters.Regex(r"^https:\/\/.*$"),
-                save_configuration
+                save_link_configuration
                 ),
             MessageHandler(
                 filters.TEXT & ~filters.COMMAND,
@@ -49,8 +79,14 @@ admin_conversation_handler = ConversationHandler(
             "stop", 
             stop_command),
         CallbackQueryHandler(
-            set_event_configuration, 
-            pattern=f"^({str(START_EVENT_TIME)}|{str(END_EVENT_TIME)}|{str(ADD_ADMIN)}|{str(REMOVE_ADMIN)}|{str(SET_FORM_LINK)})$"),
+            set_event_time, 
+            pattern=f"^({str(START_EVENT_TIME)}|{str(END_EVENT_TIME)})$"),
+        CallbackQueryHandler(
+            set_event_admin, 
+            pattern=f"^({str(ADD_ADMIN)}|{str(REMOVE_ADMIN)})$"),
+        CallbackQueryHandler(
+            set_event_link, 
+            pattern=f"^({str(SET_FORM_LINK)})$"),
         CallbackQueryHandler(
             show_current_configuration, 
             pattern=f"^{str(SHOW_CURRENT_CONFIGURATION)}$"),
