@@ -1,6 +1,6 @@
 from firstsaturdaybot import RUNTIME_CONFIG
 from firstsaturdaybot.commands import *
-from firstsaturdaybot.tools.users import restricted
+from firstsaturdaybot.tools.security import restricted
 from firstsaturdaybot.tools.logger import myLogger
 from telegram import (
     ReplyKeyboardRemove, 
@@ -27,7 +27,8 @@ async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE
             InlineKeyboardButton(text="Remove bot admin", callback_data=str(REMOVE_ADMIN)),
         ],
         [
-            InlineKeyboardButton(text="Set link to the form", callback_data=str(SET_FORM_LINK)),
+            InlineKeyboardButton(text="Set link to statistic spreadsheet", callback_data=str(SET_STATISTIC_FORM_LINK)),
+            InlineKeyboardButton(text="Set link to poral hunt spreadsheet", callback_data=str(SET_PORTAL_HUNT_SPREADSHEET_LINK)),
         ],
         [
             InlineKeyboardButton(text="Show configuration", callback_data=str(SHOW_CURRENT_CONFIGURATION)),
@@ -111,9 +112,14 @@ async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
-    if update.callback_query.data == str(SET_FORM_LINK):
+    if update.callback_query.data == str(SET_STATISTIC_FORM_LINK):
         text = f"Please provide new link to the Google form.\n"
-        text += f"Current link: {RUNTIME_CONFIG.FORM_LINK}"
+        text += f"Current link: {RUNTIME_CONFIG.STATISTIC_FORM_LINK}"
+        NEXT_STAGE = TYPING_STATISTIC_SPREADSHEET_LINK
+    elif update.callback_query.data == str(SET_PORTAL_HUNT_SPREADSHEET_LINK):
+        text = f"Please provide new link to the Portal Hunt spreadsheet.\n"
+        text += f"Current link: {RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK}"
+        NEXT_STAGE = TYPING_PORTAL_HUNT_SPREADSHEET_LINK
     else:
         return await incorrect_input(update, context) 
 
@@ -123,7 +129,7 @@ async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(text=text, reply_markup=keyboard)
 
-    return TYPING_LINK_CONFIGURATION
+    return NEXT_STAGE
 
 
 @restricted
@@ -196,7 +202,8 @@ async def show_current_configuration(update: Update, context: ContextTypes.DEFAU
     text += f"Current timezone: {RUNTIME_CONFIG.EVENT_TIMEZONE}\n"
     text += f"Current city: {RUNTIME_CONFIG.EVENT_CITY}\n"
     text += f"Admins username: {RUNTIME_CONFIG.show_current_admins_as_string()}\n"
-    text += f"[Google form link]({RUNTIME_CONFIG.FORM_LINK})\n"
+    text += f"[Google form link]({RUNTIME_CONFIG.STATISTIC_FORM_LINK})\n"
+    text += f"[Portal Hunt spreadsheet link]({RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK})\n"
 
     buttons = [[InlineKeyboardButton(text="Return Back", callback_data=str(TO_START))]]
     keyboard = InlineKeyboardMarkup(buttons)

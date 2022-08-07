@@ -18,7 +18,8 @@ class Config(object):
         self.EVENT_TIMEZONE = self.load_var_from_env('EVENT_TIMEZONE')
         self.EVENT_LANGUAGE = self.load_var_from_env('EVENT_LANGUAGE')
         self.MONGO_URL = self.load_var_from_env('MONGO_URL')
-        self.FORM_LINK = ''
+        self.STATISTIC_FORM_LINK = ''
+        self.PORTAL_HUNT_SPREADSHEET_LINK = ''
 
     def add_admin(self, username):
         self.RUNTIME_ADMINS.append(username)
@@ -33,8 +34,11 @@ class Config(object):
     def set_end_time (self, time):
         self.EVENT_END_TIME = time
 
-    def set_form_link (self, form_link):
-        self.FORM_LINK = form_link
+    def set_statistic_form_link (self, custom_link):
+        self.STATISTIC_FORM_LINK = custom_link
+
+    def set_portal_hunt_spreadsheet_link (self, custom_link):
+        self.PORTAL_HUNT_SPREADSHEET_LINK = custom_link
 
     def is_user_admin(self, username):
         if username in self.RUNTIME_ADMINS or username in self.GLOBAL_ADMINS:

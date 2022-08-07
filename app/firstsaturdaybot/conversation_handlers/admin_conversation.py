@@ -60,7 +60,20 @@ admin_conversation_handler = ConversationHandler(
                 incorrect_input
             )
             ],
-        TYPING_LINK_CONFIGURATION: [
+        TYPING_STATISTIC_SPREADSHEET_LINK: [
+            CallbackQueryHandler(
+                admin_start_command, 
+                pattern="^" + str(TO_START) + "$"),
+            MessageHandler(
+                filters.Regex(r"^https:\/\/.*$"),
+                save_link_configuration
+                ),
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND,
+                incorrect_input
+            )
+            ],
+        TYPING_PORTAL_HUNT_SPREADSHEET_LINK: [
             CallbackQueryHandler(
                 admin_start_command, 
                 pattern="^" + str(TO_START) + "$"),
@@ -86,7 +99,7 @@ admin_conversation_handler = ConversationHandler(
             pattern=f"^({str(ADD_ADMIN)}|{str(REMOVE_ADMIN)})$"),
         CallbackQueryHandler(
             set_event_link, 
-            pattern=f"^({str(SET_FORM_LINK)})$"),
+            pattern=f"^({str(SET_STATISTIC_FORM_LINK)}|{str(SET_PORTAL_HUNT_SPREADSHEET_LINK)})$"),
         CallbackQueryHandler(
             show_current_configuration, 
             pattern=f"^{str(SHOW_CURRENT_CONFIGURATION)}$"),
