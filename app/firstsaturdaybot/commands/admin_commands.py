@@ -3,14 +3,12 @@ from firstsaturdaybot.commands import *
 from firstsaturdaybot.tools.security import restricted_admin
 from firstsaturdaybot.tools.logger import myLogger
 from telegram import (
-    ReplyKeyboardRemove, 
     InlineKeyboardButton, 
     InlineKeyboardMarkup, 
     Update
 )
 from telegram.ext import (
-    ContextTypes, 
-    ConversationHandler
+    ContextTypes
 )
 
 logger = myLogger(__name__)
