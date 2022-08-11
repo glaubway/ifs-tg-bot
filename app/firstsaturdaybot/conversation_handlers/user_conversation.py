@@ -16,5 +16,5 @@ user_conversation_handler = ConversationHandler(
             CallbackQueryHandler(select_user_feature, pattern="^" + str(SELECTING_ADMIN_ACTION) + "$")
         ],
     },
-    fallbacks=[MessageHandler(filters.Regex("^Done$"), done_command)],
+    fallbacks=[MessageHandler(filters.Regex("^Done$"), stop_command)],
 )
