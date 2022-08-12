@@ -10,11 +10,20 @@ from telegram.ext import (
     CallbackQueryHandler)
 
 user_conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler('start', user_start_command)],
+    entry_points=[CommandHandler('start', user_start_command, filters=filters.ChatType.PRIVATE)],
     states={
-        SELECTING_ADMIN_ACTION: [
-            CallbackQueryHandler(select_user_feature, pattern="^" + str(SELECTING_ADMIN_ACTION) + "$")
-        ],
+        SELECTING_USER_ACTION: [
+            CallbackQueryHandler(
+                stop_nested_command, 
+                pattern="^" + str(STOP_CONVERSATION) + "$")
+            ],
     },
-    fallbacks=[MessageHandler(filters.Regex("^Done$"), stop_command)],
+    fallbacks=[
+        CommandHandler(
+            "stop", 
+            stop_command),
+        CallbackQueryHandler(
+            stop_nested_command, 
+            pattern=f"^{str(STOP_CONVERSATION)}$")
+        ],
 )

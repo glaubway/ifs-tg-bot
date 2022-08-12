@@ -9,11 +9,12 @@ from telegram.ext import ConversationHandler
 ) = map(chr,range(0,5))
 
 (
+    SELECTING_USER_ACTION,
     SET_NICKNAME,
     REMOVE_NICKNAME,
     TYPING_REPLY,
     SEND_PHOTO
-) = map(chr,range(10, 14))
+) = map(chr,range(10, 15))
 
 (
     SELECTING_ADMIN_ACTION,

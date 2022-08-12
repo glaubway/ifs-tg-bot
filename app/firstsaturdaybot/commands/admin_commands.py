@@ -1,4 +1,4 @@
-from firstsaturdaybot import RUNTIME_CONFIG
+from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
 from firstsaturdaybot.commands import *
 from firstsaturdaybot.tools.security import restricted_admin
 from firstsaturdaybot.tools.logger import myLogger
@@ -171,11 +171,15 @@ async def save_time_configuration(update: Update, context: ContextTypes.DEFAULT_
     user_message = update.message.text
 
     if context.user_data[CURRENT_FEATURE] == str(START_EVENT_TIME):
-        RUNTIME_CONFIG.set_start_time(user_message)
-        text = f"The new star event time is {user_message}"
+        if RUNTIME_TIME.set_start_time(user_message):
+            text = f"The new star event time is {user_message}"
+        else:
+            text = f"Start time should be less then end time"
     elif context.user_data[CURRENT_FEATURE] == str(END_EVENT_TIME):
-        RUNTIME_CONFIG.set_end_time(user_message)
-        text = f"The new end event time is {user_message}"
+        if RUNTIME_TIME.set_end_time(user_message):
+            text = f"The new end event time is {user_message}"
+        else:
+            text = f"End time should be more then end time"
     
     context.user_data.clear()
     return await admin_start_command(update, context, text)
@@ -200,9 +204,9 @@ async def show_current_configuration(update: Update, context: ContextTypes.DEFAU
     context.user_data[START_OVER] = True
     
     text = f"The current configuration of the bot is next:\n"
-    text += f"Start event time: {RUNTIME_CONFIG.EVENT_START_TIME}\n"
-    text += f"End event time: {RUNTIME_CONFIG.EVENT_END_TIME}\n"
-    text += f"Current timezone: {RUNTIME_CONFIG.EVENT_TIMEZONE}\n"
+    text += f"Start event time: {RUNTIME_TIME.start_time().time()}\n"
+    text += f"End event time: {RUNTIME_TIME.end_time().time()}\n"
+    text += f"Current timezone: {RUNTIME_TIME.EVENT_TIMEZONE}\n"
     text += f"Current city: {RUNTIME_CONFIG.EVENT_CITY}\n"
     text += f"Admins username: {RUNTIME_CONFIG.show_current_admins_as_string()}\n"
     text += f"[Google form link]({RUNTIME_CONFIG.STATISTIC_FORM_LINK})\n"

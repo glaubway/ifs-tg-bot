@@ -1,6 +1,7 @@
 from firstsaturdaybot.tools.configuration import Config
-from firstsaturdaybot.tools.logger import myLogger
+from firstsaturdaybot.tools.timemodule import EventTime
 RUNTIME_CONFIG = Config()
+RUNTIME_TIME = EventTime()
 
 from firstsaturdaybot.conversation_handlers.admin_conversation import *
 from firstsaturdaybot.conversation_handlers.user_conversation import *

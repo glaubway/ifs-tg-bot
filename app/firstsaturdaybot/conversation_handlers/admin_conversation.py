@@ -27,7 +27,7 @@ admin_conversation_handler = ConversationHandler(
                 admin_start_command, 
                 pattern="^" + str(TO_START) + "$"),
             MessageHandler(
-                filters.Regex(r"^[0-2]?[0-9]\:[0-5]?[0-9]$"),
+                filters.Regex(r"^(([0-1]?[0-9])|([2][0-3]))\:[0-5]?[0-9]$"),
                 save_time_configuration
                 ),
             MessageHandler(

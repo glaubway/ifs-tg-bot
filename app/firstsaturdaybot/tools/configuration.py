@@ -1,5 +1,4 @@
 from asyncio.log import logger
-from cmath import log
 from firstsaturdaybot.tools.logger import myLogger
 from os import environ
 
@@ -9,13 +8,10 @@ class Config(object):
     
     def __init__(self) -> None:
         self.RUNTIME_ADMINS = []
-        self.EVENT_START_TIME = '00:00'
-        self.EVENT_END_TIME = '01:00'
         self.BOT_TOKEN = self.load_var_from_env('BOT_TOKEN')
         self.CHAT_ID = self.load_var_from_env('CHAT_ID')
         self.GLOBAL_ADMINS = [admin for admin in self.load_var_from_env('GLOBAL_ADMINS').split()]
         self.EVENT_CITY = self.load_var_from_env('EVENT_CITY')
-        self.EVENT_TIMEZONE = self.load_var_from_env('EVENT_TIMEZONE')
         self.EVENT_LANGUAGE = self.load_var_from_env('EVENT_LANGUAGE')
         self.MONGO_URL = self.load_var_from_env('MONGO_URL')
         self.STATISTIC_FORM_LINK = ''
@@ -27,12 +23,6 @@ class Config(object):
     def remove_admin(self, username):
         self.RUNTIME_ADMINS.remove(username)
         return True
-
-    def set_start_time (self, time):
-        self.EVENT_START_TIME = time
-        
-    def set_end_time (self, time):
-        self.EVENT_END_TIME = time
 
     def set_statistic_form_link (self, custom_link):
         self.STATISTIC_FORM_LINK = custom_link
@@ -70,4 +60,3 @@ class Config(object):
         except KeyError as error:
             logger.exception(f'Environment variable {env_name} didn\' found.\nPlease check .env file.')
             raise error
-           

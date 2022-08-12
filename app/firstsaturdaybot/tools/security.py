@@ -1,6 +1,5 @@
 from functools import wraps
-from firstsaturdaybot import RUNTIME_CONFIG
-from firstsaturdaybot.tools.timemodule import is_firstsaturday
+from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
 from firstsaturdaybot.tools.logger import myLogger
 from firstsaturdaybot.commands.common_commads import reply_message
 logger = myLogger(__name__)
@@ -35,7 +34,7 @@ def restricted_firstsaturday(func):
             conv_type = "callback"
         text = f"Hi {user_name}!\n"
         text += "Event haven't been started yet, please retun to me at the first saturday of month."
-        if not is_firstsaturday():
+        if not RUNTIME_TIME.is_firstsaturday_today():
             await reply_message(conv_type, text, update, context)
             return
         return await func(update, context, *args, **kwargs)
