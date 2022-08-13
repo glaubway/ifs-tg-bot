@@ -6,7 +6,7 @@ from telegram.ext import ConversationHandler
     START_OVER,
     STOP_CONVERSATION,
     TO_START
-) = map(chr,range(0,5))
+) = map(chr,range(100,105))
 
 (
     SELECTING_USER_ACTION,
@@ -14,7 +14,7 @@ from telegram.ext import ConversationHandler
     REMOVE_NICKNAME,
     TYPING_REPLY,
     SEND_PHOTO
-) = map(chr,range(10, 15))
+) = map(chr,range(110, 115))
 
 (
     SELECTING_ADMIN_ACTION,
@@ -24,12 +24,16 @@ from telegram.ext import ConversationHandler
     REMOVE_ADMIN,
     SET_STATISTIC_FORM_LINK,
     SET_PORTAL_HUNT_SPREADSHEET_LINK,
+    SET_EVENT_RESTRICTION_POLICY,
+    CHANGE_DATE_RESTRICTION,
+    CHANGE_TIME_RESTRICTION,
     TYPING_TIME_CONFIGURATION,
     TYPING_STATISTIC_SPREADSHEET_LINK,
     TYPING_PORTAL_HUNT_SPREADSHEET_LINK,
     TYPING_ADD_ADMIN,
     TYPING_REMOVE_ADMIN,
+    TYPING_EVENT_RESTRICTION,
     SHOW_CURRENT_CONFIGURATION
-)= map(chr,range(20, 33))
+)= map(chr,range(120, 137))
 
 END = ConversationHandler.END

@@ -1,8 +1,17 @@
-from firstsaturdaybot import RUNTIME_CONFIG
+from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
 from firstsaturdaybot.commands import *
 from firstsaturdaybot.tools.security import restricted_firstsaturday
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import ContextTypes
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Update
+    )
+from telegram.ext import (
+    ContextTypes
+    )
+from telegram.constants import (
+    ParseMode
+    )
 
 @restricted_firstsaturday
 async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text=None):
@@ -31,19 +40,19 @@ async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE,
         user_name = update.callback_query.from_user.username
     if text is None:
         text = f"Hi {user_name}!\n"
-        text += f"Welcome at our {RUNTIME_CONFIG.EVENT_CITY} First Saturday\n"
-        text += f"Event start time - {RUNTIME_CONFIG.EVENT_START_TIME}\n"
-        text += f"Event end time - {RUNTIME_CONFIG.EVENT_END_TIME}\n"
-        text += f"Google form for statistic - {RUNTIME_CONFIG.EVENT_END_TIME}\n"
-        text += f"[Google form link]({RUNTIME_CONFIG.STATISTIC_FORM_LINK})\n"
-        text += f"[Portal Hunt spreadsheet link]({RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK})\n"
+        text += f"Welcome at the {RUNTIME_CONFIG.EVENT_CITY} First Saturday\n"
+        text += f"Start event time: {RUNTIME_TIME.start_time().strftime('%H:%M %Z')}\n"
+        text += f"End event time: {RUNTIME_TIME.end_time().strftime('%H:%M %Z')}\n"
+        text += f"Current timezone: {RUNTIME_TIME.EVENT_TIMEZONE}\n"
+        text += f"<a href='{RUNTIME_CONFIG.STATISTIC_FORM_LINK}'>Google form link</a>\n"
+        text += f"<a href='{RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK}'>Portal Hunt spreadsheet link</a>\n"
         text += "To abort, simply type /stop."
 
     if context.user_data.get(START_OVER):
         await update.callback_query.answer()
-        await update.callback_query.edit_message_text(text=text, reply_markup=keyboard, parse_mode='MarkdownV2')
+        await update.callback_query.edit_message_text(text=text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
     else:
-        await update.message.reply_text(text=text, reply_markup=keyboard, parse_mode='MarkdownV2')
+        await update.message.reply_text(text=text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
 
     context.user_data[START_OVER] = False
     return SELECTING_USER_ACTION

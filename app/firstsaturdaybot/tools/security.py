@@ -33,9 +33,15 @@ def restricted_firstsaturday(func):
             user_name = update.callback_query.from_user.username
             conv_type = "callback"
         text = f"Hi {user_name}!\n"
-        text += "Event haven't been started yet, please retun to me at the first saturday of month."
-        if not RUNTIME_TIME.is_firstsaturday_today():
-            await reply_message(conv_type, text, update, context)
-            return
+        text += "Event hasn't been started yet or already ended, please retun to me at the first saturday of month."
+        if RUNTIME_CONFIG.EVENT_DATE_RESTRICTION and not RUNTIME_TIME.is_firstsaturday_today():
+            if RUNTIME_CONFIG.EVENT_TIME_RESTRICTION and not RUNTIME_TIME.is_event_time():
+                await reply_message(conv_type, text, update, context)
+                return
+            elif RUNTIME_CONFIG.EVENT_TIME_RESTRICTION and RUNTIME_TIME.is_event_time():
+                return await func(update, context, *args, **kwargs)
+            else:
+                await reply_message(conv_type, text, update, context)
+                return 
         return await func(update, context, *args, **kwargs)
     return wrapped

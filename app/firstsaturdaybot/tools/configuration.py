@@ -12,6 +12,8 @@ class Config(object):
         self.CHAT_ID = self.load_var_from_env('CHAT_ID')
         self.GLOBAL_ADMINS = [admin for admin in self.load_var_from_env('GLOBAL_ADMINS').split()]
         self.EVENT_CITY = self.load_var_from_env('EVENT_CITY')
+        self.EVENT_DATE_RESTRICTION = self.str2bool(self.load_var_from_env('EVENT_DATE_RESTRICTION'))
+        self.EVENT_TIME_RESTRICTION = self.str2bool(self.load_var_from_env('EVENT_TIME_RESTRICTION'))
         self.EVENT_LANGUAGE = self.load_var_from_env('EVENT_LANGUAGE')
         self.MONGO_URL = self.load_var_from_env('MONGO_URL')
         self.STATISTIC_FORM_LINK = ''
@@ -29,6 +31,32 @@ class Config(object):
 
     def set_portal_hunt_spreadsheet_link (self, custom_link):
         self.PORTAL_HUNT_SPREADSHEET_LINK = custom_link
+
+    def change_date_restriction (self):
+        if self.EVENT_DATE_RESTRICTION:
+            self.EVENT_DATE_RESTRICTION = False
+            self.EVENT_TIME_RESTRICTION = False
+        else:
+            self.EVENT_DATE_RESTRICTION = True
+
+    def change_time_restriction (self):
+        if self.EVENT_TIME_RESTRICTION:
+            self.EVENT_TIME_RESTRICTION = False
+        else:
+            self.EVENT_TIME_RESTRICTION = True
+            self.EVENT_DATE_RESTRICTION = True
+
+    def show_date_restriction (self):
+        if self.EVENT_DATE_RESTRICTION:
+            return "Enabled"
+        else:
+            return "Disabled"
+
+    def show_time_restriction (self):
+        if self.EVENT_TIME_RESTRICTION:
+            return "Enabled"
+        else:
+            return "Disabled"
 
     def is_user_admin(self, username):
         if username in self.RUNTIME_ADMINS or username in self.GLOBAL_ADMINS:
@@ -53,10 +81,15 @@ class Config(object):
     def load_var_from_env(self, env_name):
         try:
             if environ[env_name] == '':
-                logger.exception(f'Environment variable {env_name} didn\' set correctly.\nPlease check .env file.')
+                logger.exception(f'Environment variable {env_name} didn\'t set correctly.\nPlease check .env file.')
                 raise TypeError
             else:
                 return environ[env_name]
         except KeyError as error:
-            logger.exception(f'Environment variable {env_name} didn\' found.\nPlease check .env file.')
+            logger.exception(f'Environment variable {env_name} didn\'t found.\nPlease check .env file.')
             raise error
+    def str2bool(self, string):
+        if string in ["True", "true"]:
+            return True
+        else:
+            return False

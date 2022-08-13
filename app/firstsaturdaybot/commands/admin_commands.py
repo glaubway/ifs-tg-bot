@@ -6,10 +6,13 @@ from telegram import (
     InlineKeyboardButton, 
     InlineKeyboardMarkup, 
     Update
-)
+    )
 from telegram.ext import (
     ContextTypes
-)
+    )
+from telegram.constants import (
+    ParseMode
+    )
 
 logger = myLogger(__name__)
 
@@ -27,6 +30,9 @@ async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE
         [
             InlineKeyboardButton(text="Statistic form link", callback_data=str(SET_STATISTIC_FORM_LINK)),
             InlineKeyboardButton(text="Portal Hunt link", callback_data=str(SET_PORTAL_HUNT_SPREADSHEET_LINK)),
+        ],
+        [
+            InlineKeyboardButton(text="Change event restriction policy", callback_data=str(SET_EVENT_RESTRICTION_POLICY)),
         ],
         [
             InlineKeyboardButton(text="Show configuration", callback_data=str(SHOW_CURRENT_CONFIGURATION)),
@@ -131,6 +137,31 @@ async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return NEXT_STAGE
 
+@restricted_admin
+async def set_event_restriction_policy(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data[START_OVER] = True
+    context.user_data[CURRENT_FEATURE] = update.callback_query.data
+
+    text = "There you can change some event restriction policy.\n"
+    text += "If you enable time restriction, date restriction will be enabled too.\n"
+    text += "If you disable date restriction, time restriction will be disabled too."
+    if RUNTIME_CONFIG.EVENT_DATE_RESTRICTION:
+        buttons = [[InlineKeyboardButton(text="Disable date restriction", callback_data=str(CHANGE_DATE_RESTRICTION))]]
+    else:
+        buttons = [[InlineKeyboardButton(text="Enable date restriction", callback_data=str(CHANGE_DATE_RESTRICTION))]]
+
+    if RUNTIME_CONFIG.EVENT_TIME_RESTRICTION:
+        buttons.append([InlineKeyboardButton(text="Disable time restriction", callback_data=str(CHANGE_TIME_RESTRICTION))])
+    else:
+        buttons.append([InlineKeyboardButton(text="Enable time restriction", callback_data=str(CHANGE_TIME_RESTRICTION))])
+
+    buttons.append([InlineKeyboardButton(text="Return Back", callback_data=str(TO_START))])
+    keyboard = InlineKeyboardMarkup(buttons)
+
+    await update.callback_query.answer()
+    await update.callback_query.edit_message_text(text=text, reply_markup=keyboard)
+
+    return TYPING_EVENT_RESTRICTION
 
 @restricted_admin
 async def incorrect_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -198,24 +229,51 @@ async def save_link_configuration(update: Update, context: ContextTypes.DEFAULT_
     context.user_data.clear()
     return await admin_start_command(update, context, text)
 
+@restricted_admin
+async def change_date_restriction(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    
+    RUNTIME_CONFIG.change_date_restriction()
+
+    text = "Event date restriction policy have been changed.\n"
+    text += f"Current state {RUNTIME_CONFIG.show_date_restriction()}\n"
+    text += f"Current state {RUNTIME_CONFIG.show_time_restriction()}"
+    
+    context.user_data.clear()
+    context.user_data[START_OVER] = True
+    await admin_start_command(update, context, text)
+
+@restricted_admin
+async def change_time_restriction(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    
+    RUNTIME_CONFIG.change_time_restriction()
+
+    text = "Event time restriction policy have been changed.\n"
+    text += f"Current state {RUNTIME_CONFIG.show_date_restriction()}\n"
+    text += f"Current state {RUNTIME_CONFIG.show_time_restriction()}"
+    
+    context.user_data.clear()
+    context.user_data[START_OVER] = True
+    await admin_start_command(update, context, text)
 
 @restricted_admin
 async def show_current_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     context.user_data[START_OVER] = True
     
     text = f"The current configuration of the bot is next:\n"
-    text += f"Start event time: {RUNTIME_TIME.start_time().time()}\n"
-    text += f"End event time: {RUNTIME_TIME.end_time().time()}\n"
+    text += f"Start event time: {RUNTIME_TIME.start_time().strftime('%H:%M %Z')}\n"
+    text += f"End event time: {RUNTIME_TIME.end_time().strftime('%H:%M %Z')}\n"
     text += f"Current timezone: {RUNTIME_TIME.EVENT_TIMEZONE}\n"
     text += f"Current city: {RUNTIME_CONFIG.EVENT_CITY}\n"
     text += f"Admins username: {RUNTIME_CONFIG.show_current_admins_as_string()}\n"
-    text += f"[Google form link]({RUNTIME_CONFIG.STATISTIC_FORM_LINK})\n"
-    text += f"[Portal Hunt spreadsheet link]({RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK})\n"
+    text += f"<a href='{RUNTIME_CONFIG.STATISTIC_FORM_LINK}'>Google form link</a>\n"
+    text += f"<a href='{RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK}'>Portal Hunt spreadsheet link</a>\n"
+    text += f"Event date restriction policy: {RUNTIME_CONFIG.show_date_restriction()}\n"
+    text += f"Event time restriction policy: {RUNTIME_CONFIG.show_time_restriction()}\n"
 
     buttons = [[InlineKeyboardButton(text="Return Back", callback_data=str(TO_START))]]
     keyboard = InlineKeyboardMarkup(buttons)
 
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text(text=text, reply_markup=keyboard, parse_mode='MarkdownV2')
+    await update.callback_query.edit_message_text(text=text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
 
     return SHOW_CURRENT_CONFIGURATION
