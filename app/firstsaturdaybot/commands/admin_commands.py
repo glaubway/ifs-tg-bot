@@ -1,7 +1,7 @@
 from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
 from firstsaturdaybot.commands import *
-from firstsaturdaybot.tools.security import restricted_admin
-from firstsaturdaybot.tools.logger import myLogger
+from firstsaturdaybot.handlers.security import restricted_admin
+from firstsaturdaybot.handlers.logger import myLogger
 from telegram import (
     InlineKeyboardButton, 
     InlineKeyboardMarkup, 
@@ -20,8 +20,8 @@ logger = myLogger(__name__)
 async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text=None):
     buttons = [
         [
-            InlineKeyboardButton(text="Set start event time", callback_data=str(START_EVENT_TIME)),
-            InlineKeyboardButton(text="Set end event time", callback_data=str(END_EVENT_TIME)),
+            InlineKeyboardButton(text="Set start event time", callback_data=str(SET_START_EVENT_TIME)),
+            InlineKeyboardButton(text="Set end event time", callback_data=str(SET_END_EVENT_TIME)),
         ],
         [
             InlineKeyboardButton(text="Add bot admin", callback_data=str(ADD_ADMIN)),
@@ -66,9 +66,9 @@ async def set_event_time(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
 
-    if update.callback_query.data == str(START_EVENT_TIME):
+    if update.callback_query.data == str(SET_START_EVENT_TIME):
         text = f"Please provide start event time in the next format HH:MM."
-    elif update.callback_query.data == str(END_EVENT_TIME):
+    elif update.callback_query.data == str(SET_END_EVENT_TIME):
         text = f"Please provide end event time in the next format HH:MM."
     else:
         return await incorrect_input(update, context) 
@@ -201,12 +201,12 @@ async def remove_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def save_time_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
 
-    if context.user_data[CURRENT_FEATURE] == str(START_EVENT_TIME):
+    if context.user_data[CURRENT_FEATURE] == str(SET_START_EVENT_TIME):
         if RUNTIME_TIME.set_start_time(user_message):
             text = f"The new star event time is {user_message}"
         else:
             text = f"Start time should be less then end time"
-    elif context.user_data[CURRENT_FEATURE] == str(END_EVENT_TIME):
+    elif context.user_data[CURRENT_FEATURE] == str(SET_END_EVENT_TIME):
         if RUNTIME_TIME.set_end_time(user_message):
             text = f"The new end event time is {user_message}"
         else:

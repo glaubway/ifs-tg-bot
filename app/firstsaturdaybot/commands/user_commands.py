@@ -1,6 +1,6 @@
 from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
 from firstsaturdaybot.commands import *
-from firstsaturdaybot.tools.security import restricted_firstsaturday
+from firstsaturdaybot.handlers.security import restricted_firstsaturday
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -17,16 +17,16 @@ from telegram.constants import (
 async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text=None):
     buttons = [
         [
-            InlineKeyboardButton(text="Send photo", callback_data=str(ADD_ADMIN))
+            InlineKeyboardButton(text="Send photo", callback_data=str(SEND_PHOTO))
         ],
         [
-            InlineKeyboardButton(text="Change Ingress nickname", callback_data=str(START_EVENT_TIME)),
+            InlineKeyboardButton(text="Set Ingress nickname", callback_data=str(SET_NICKNAME)),
         ],
         [
-            InlineKeyboardButton(text="Change language", callback_data=str(SHOW_CURRENT_CONFIGURATION)),
+            InlineKeyboardButton(text="Change language", callback_data=str(SET_LANGUAGE)),
         ],
         [
-            InlineKeyboardButton(text="Privacy Policy", callback_data=str(SHOW_CURRENT_CONFIGURATION)),
+            InlineKeyboardButton(text="Privacy Policy", callback_data=str(SHOW_PRIVACY_POLICY)),
         ],
         [
             InlineKeyboardButton(text="Done", callback_data=str(STOP_CONVERSATION)),
@@ -43,7 +43,6 @@ async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE,
         text += f"Welcome at the {RUNTIME_CONFIG.EVENT_CITY} First Saturday\n"
         text += f"Start event time: {RUNTIME_TIME.start_time().strftime('%H:%M %Z')}\n"
         text += f"End event time: {RUNTIME_TIME.end_time().strftime('%H:%M %Z')}\n"
-        text += f"Current timezone: {RUNTIME_TIME.EVENT_TIMEZONE}\n"
         text += f"<a href='{RUNTIME_CONFIG.STATISTIC_FORM_LINK}'>Google form link</a>\n"
         text += f"<a href='{RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK}'>Portal Hunt spreadsheet link</a>\n"
         text += "To abort, simply type /stop."

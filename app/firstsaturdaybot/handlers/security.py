@@ -1,6 +1,6 @@
 from functools import wraps
 from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
-from firstsaturdaybot.tools.logger import myLogger
+from firstsaturdaybot.handlers.logger import myLogger
 from firstsaturdaybot.commands.common_commads import reply_message
 logger = myLogger(__name__)
 

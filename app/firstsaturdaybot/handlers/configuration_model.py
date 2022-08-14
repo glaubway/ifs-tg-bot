@@ -1,5 +1,5 @@
 from asyncio.log import logger
-from firstsaturdaybot.tools.logger import myLogger
+from firstsaturdaybot.handlers.logger import myLogger
 from os import environ
 
 logger = myLogger(__name__)
@@ -88,6 +88,7 @@ class Config(object):
         except KeyError as error:
             logger.exception(f'Environment variable {env_name} didn\'t found.\nPlease check .env file.')
             raise error
+
     def str2bool(self, string):
         if string in ["True", "true"]:
             return True

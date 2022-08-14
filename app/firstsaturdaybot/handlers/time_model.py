@@ -2,7 +2,7 @@ from calendar import monthcalendar
 from datetime import datetime
 from os import environ
 import pytz
-from firstsaturdaybot.tools.logger import myLogger
+from firstsaturdaybot.handlers.logger import myLogger
 
 logger = myLogger(__name__)
 

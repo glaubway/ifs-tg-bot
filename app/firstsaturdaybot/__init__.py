@@ -1,5 +1,5 @@
-from firstsaturdaybot.tools.configuration import Config
-from firstsaturdaybot.tools.timemodule import EventTime
+from firstsaturdaybot.handlers.configuration_model import Config
+from firstsaturdaybot.handlers.time_model import EventTime
 RUNTIME_CONFIG = Config()
 RUNTIME_TIME = EventTime()
 

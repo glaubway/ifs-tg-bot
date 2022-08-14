@@ -98,7 +98,7 @@ admin_conversation_handler = ConversationHandler(
             stop_command),
         CallbackQueryHandler(
             set_event_time, 
-            pattern=f"^({str(START_EVENT_TIME)}|{str(END_EVENT_TIME)})$"),
+            pattern=f"^({str(SET_START_EVENT_TIME)}|{str(SET_END_EVENT_TIME)})$"),
         CallbackQueryHandler(
             set_event_admin, 
             pattern=f"^({str(ADD_ADMIN)}|{str(REMOVE_ADMIN)})$"),
