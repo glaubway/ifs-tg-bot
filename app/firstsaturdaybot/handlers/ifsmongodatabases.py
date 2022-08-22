@@ -3,7 +3,7 @@ from firstsaturdaybot.handlers.logger import myLogger
 
 logger = myLogger(__name__)
 
-class MongoDatabase():
+class IFSMongoDatabase:
     mongo_url: str
     mongo_client: MongoClient
 

@@ -6,7 +6,7 @@ from firstsaturdaybot.handlers.logger import myLogger
 
 logger = myLogger(__name__)
 
-class EventTime():
+class IFSEventTime:
     EVENT_START_TIME: dict
     EVENT_END_TIME: dict
     EVENT_TIMEZONE: pytz

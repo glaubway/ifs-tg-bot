@@ -1,9 +1,9 @@
-from firstsaturdaybot.handlers.configuration_model import Config
-from firstsaturdaybot.handlers.time_model import EventTime
-from firstsaturdaybot.handlers.databases_module import MongoDatabase
-RUNTIME_CONFIG = Config()
-RUNTIME_TIME = EventTime()
-RUNTIME_DATABASE = MongoDatabase(RUNTIME_CONFIG.MONGO_URL, RUNTIME_CONFIG.EVENT_CITY)
+from firstsaturdaybot.handlers.ifsconfiguration import IFSConfiguration
+from firstsaturdaybot.handlers.ifseventtime import IFSEventTime
+from firstsaturdaybot.handlers.ifsmongodatabases import IFSMongoDatabase
+RUNTIME_CONFIG = IFSConfiguration()
+RUNTIME_TIME = IFSEventTime()
+RUNTIME_DATABASE = IFSMongoDatabase(RUNTIME_CONFIG.MONGO_URL, RUNTIME_CONFIG.EVENT_CITY)
 RUNTIME_CONFIG.sync_admins_from_db(RUNTIME_DATABASE.show_all_admins())
 
 from firstsaturdaybot.conversation_handlers.admin_conversation import *

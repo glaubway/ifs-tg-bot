@@ -1,10 +1,9 @@
-from asyncio.log import logger
 from firstsaturdaybot.handlers.logger import myLogger
 from os import environ
 
 logger = myLogger(__name__)
 
-class Config():
+class IFSConfiguration:
     RUNTIME_ADMINS: list
     BOT_TOKEN: str
     CHAT_ID: str
