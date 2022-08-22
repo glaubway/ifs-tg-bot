@@ -24,7 +24,7 @@ async def invalid_button_command(update: Update, context: ContextTypes.DEFAULT_T
         "Sorry, I could not process this button click 😕 Please send /start to get a new keyboard."
     )
 
-async def reply_message (conv_type, text, update, context) -> int:
+async def reply_message (conv_type: str, text: str, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if conv_type == "message":
         await update.message.reply_text(text)
         context.user_data.clear()

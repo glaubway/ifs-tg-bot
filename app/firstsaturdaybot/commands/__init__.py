@@ -6,7 +6,7 @@ from telegram.ext import ConversationHandler
     START_OVER,
     STOP_CONVERSATION,
     TO_START
-) = map(int, range(100,105))
+) = map(str, range(100,105))
 
 (
     SELECTING_USER_ACTION,
@@ -16,7 +16,7 @@ from telegram.ext import ConversationHandler
     REMOVE_NICKNAME,
     TYPING_NICKNAME,
     SEND_PHOTO
-) = map(int, range(110, 117))
+) = map(str, range(110, 117))
 
 (
     SELECTING_ADMIN_ACTION,
@@ -36,6 +36,6 @@ from telegram.ext import ConversationHandler
     TYPING_REMOVE_ADMIN,
     TYPING_EVENT_RESTRICTION,
     SHOW_CURRENT_CONFIGURATION
-) = map(int, range(120, 137))
+) = map(str, range(120, 137))
 
 END: int = ConversationHandler.END

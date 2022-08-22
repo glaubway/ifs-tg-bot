@@ -17,7 +17,8 @@ from telegram.constants import (
 from typing import Union
 
 @restricted_firstsaturday
-async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> int:
+async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> str:
+    user_name: str
     buttons = [
         [
             InlineKeyboardButton(text="Send photo", callback_data=str(SEND_PHOTO))

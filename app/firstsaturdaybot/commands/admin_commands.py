@@ -20,7 +20,8 @@ from typing import Union
 logger = myLogger(__name__)
 
 @restricted_admin
-async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> int:
+async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> str:
+    user_name: str
     buttons = [
         [
             InlineKeyboardButton(text="Set start event time", callback_data=str(SET_START_EVENT_TIME)),
@@ -65,14 +66,15 @@ async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE
     return SELECTING_ADMIN_ACTION
 
 @restricted_admin
-async def set_event_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Union[int, str]:
+async def set_event_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
+    text: str
 
     if update.callback_query.data == str(SET_START_EVENT_TIME):
-        text = f"Please provide start event time in the next format HH:MM."
+        text = "Please provide start event time in the next format HH:MM."
     elif update.callback_query.data == str(SET_END_EVENT_TIME):
-        text = f"Please provide end event time in the next format HH:MM."
+        text = "Please provide end event time in the next format HH:MM."
     else:
         return await incorrect_input(update, context) 
 
@@ -85,19 +87,20 @@ async def set_event_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     return TYPING_TIME_CONFIGURATION
 
 @restricted_admin
-async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Union[int, str]:
+async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
-    NEXT_STAGE = None
+    NEXT_STAGE: int = 0
+    text: str
 
     if update.callback_query.data == str(ADD_ADMIN):
-        text = f"Please provide admin nickname which should be added\n"
+        text = "Please provide admin nickname which should be added\n"
         text += f"Current admins: {RUNTIME_CONFIG.show_current_admins_as_string()}"
         buttons = [[InlineKeyboardButton(text="Return Back", callback_data=str(TO_START))]]
         NEXT_STAGE = TYPING_ADD_ADMIN
     elif update.callback_query.data == str(REMOVE_ADMIN):
-        text = f"Please choose admin nickname which should be removed\n"
-        text += f"Current admins:"
+        text = "Please choose admin nickname which should be removed\n"
+        text += f"Current admins: {RUNTIME_CONFIG.show_current_admins_as_string()}"
         buttons = []
         for admin_nickname in RUNTIME_CONFIG.show_current_admins_as_list():
             if not RUNTIME_CONFIG.is_user_predefined_admin(admin_nickname):
@@ -116,17 +119,18 @@ async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     return NEXT_STAGE
 
 @restricted_admin
-async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Union[int, str]:
+async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
-    NEXT_STAGE = None
+    NEXT_STAGE: int = 0
+    text: str
 
     if update.callback_query.data == str(SET_STATISTIC_FORM_LINK):
-        text = f"Please provide new link to the Google form.\n"
+        text = "Please provide new link to the Google form.\n"
         text += f"Current link: {RUNTIME_CONFIG.STATISTIC_FORM_LINK}"
         NEXT_STAGE = TYPING_STATISTIC_SPREADSHEET_LINK
     elif update.callback_query.data == str(SET_PORTAL_HUNT_SPREADSHEET_LINK):
-        text = f"Please provide new link to the Portal Hunt spreadsheet.\n"
+        text = "Please provide new link to the Portal Hunt spreadsheet.\n"
         text += f"Current link: {RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK}"
         NEXT_STAGE = TYPING_PORTAL_HUNT_SPREADSHEET_LINK
     else:
@@ -141,7 +145,7 @@ async def set_event_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     return NEXT_STAGE
 
 @restricted_admin
-async def set_event_restriction_policy(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def set_event_restriction_policy(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
 
@@ -168,16 +172,18 @@ async def set_event_restriction_policy(update: Update, context: ContextTypes.DEF
 
 @restricted_admin
 async def incorrect_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
-    text = "Incorrect input, returning back."
+    text: str = "Incorrect input, returning back."
+
     await update.message.reply_text(text=text)
 
     context.user_data.clear()
-
     return await admin_start_command(update, context)
 
 @restricted_admin
 async def add_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
-    user_message = update.message.text
+    user_message: str = update.message.text
+    text: str
+
     if not RUNTIME_CONFIG.is_user_admin(user_message):
         RUNTIME_DATABASE.add_admin(user_message)
         RUNTIME_CONFIG.sync_admins_from_db(RUNTIME_DATABASE.show_all_admins())
@@ -190,8 +196,9 @@ async def add_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
 
 @restricted_admin
 async def remove_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
-    user_message = update.callback_query.data
-    
+    user_message: str = update.callback_query.data
+    text: str
+
     if RUNTIME_DATABASE.remove_admin(user_message):
         RUNTIME_CONFIG.sync_admins_from_db(RUNTIME_DATABASE.show_all_admins())
         text = f"User {user_message} has been removed from admin list."
@@ -204,25 +211,27 @@ async def remove_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> st
 
 @restricted_admin
 async def save_time_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
-    user_message = update.message.text
+    user_message: str = update.message.text
+    text: str
 
     if context.user_data[CURRENT_FEATURE] == str(SET_START_EVENT_TIME):
         if RUNTIME_TIME.set_start_time(user_message):
             text = f"The new star event time is {user_message}"
         else:
-            text = f"Start time should be less then end time"
+            text = "Start time should be less then end time"
     elif context.user_data[CURRENT_FEATURE] == str(SET_END_EVENT_TIME):
         if RUNTIME_TIME.set_end_time(user_message):
             text = f"The new end event time is {user_message}"
         else:
-            text = f"End time should be more then end time"
+            text = "End time should be more then end time"
     
     context.user_data.clear()
     return await admin_start_command(update, context, text)
 
 @restricted_admin
 async def save_link_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
-    user_message = update.message.text
+    user_message: str = update.message.text
+    text: str
 
     if context.user_data[CURRENT_FEATURE] == str(SET_STATISTIC_FORM_LINK):
         RUNTIME_CONFIG.set_statistic_form_link(user_message)
@@ -236,6 +245,7 @@ async def save_link_configuration(update: Update, context: ContextTypes.DEFAULT_
 
 @restricted_admin
 async def change_date_restriction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
+    text: str
     
     RUNTIME_CONFIG.change_date_restriction()
 
@@ -249,7 +259,8 @@ async def change_date_restriction(update: Update, context: ContextTypes.DEFAULT_
 
 @restricted_admin
 async def change_time_restriction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
-    
+    text: str    
+
     RUNTIME_CONFIG.change_time_restriction()
 
     text = "Event time restriction policy have been changed.\n"
@@ -261,8 +272,9 @@ async def change_time_restriction(update: Update, context: ContextTypes.DEFAULT_
     await admin_start_command(update, context, text)
 
 @restricted_admin
-async def show_current_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def show_current_configuration(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     context.user_data[START_OVER] = True
+    text: str
     
     text = f"The current configuration of the bot is next:\n"
     text += f"Start event time: {RUNTIME_TIME.start_time().strftime('%H:%M %Z')}\n"
