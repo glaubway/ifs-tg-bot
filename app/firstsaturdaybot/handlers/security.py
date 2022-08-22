@@ -2,11 +2,23 @@ from functools import wraps
 from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
 from firstsaturdaybot.handlers.logger import myLogger
 from firstsaturdaybot.commands.common_commads import reply_message
+
+from telegram import (
+    Update
+    )
+from telegram.ext import (
+    ContextTypes
+    )
+
 logger = myLogger(__name__)
 
 def restricted_admin(func):
     @wraps(func)
-    async def wrapped(update, context, *args, **kwargs):
+    async def wrapped(update: Update, context: ContextTypes.DEFAULT_TYPE, *args, **kwargs):
+        user_name: str
+        conv_type: str
+        user_id: int
+        text: str
         try:
             user_name = update.message.from_user.username
             user_id = update.message.from_user.id
@@ -25,7 +37,10 @@ def restricted_admin(func):
 
 def restricted_firstsaturday(func):
     @wraps(func)
-    async def wrapped(update, context, *args, **kwargs):
+    async def wrapped(update: Update, context: ContextTypes.DEFAULT_TYPE, *args, **kwargs):
+        user_name: str
+        conv_type: str
+        text: str
         try:
             user_name = update.message.from_user.username
             conv_type = "message"
