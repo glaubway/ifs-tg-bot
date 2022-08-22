@@ -1,6 +1,7 @@
 from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
 from firstsaturdaybot.commands import *
 from firstsaturdaybot.handlers.security import restricted_firstsaturday
+
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -13,8 +14,10 @@ from telegram.constants import (
     ParseMode
     )
 
+from typing import Union
+
 @restricted_firstsaturday
-async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text=None):
+async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> int:
     buttons = [
         [
             InlineKeyboardButton(text="Send photo", callback_data=str(SEND_PHOTO))
@@ -38,7 +41,7 @@ async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE,
         user_name = update.message.from_user.username
     except AttributeError:
         user_name = update.callback_query.from_user.username
-    if text is None:
+    if text == '':
         text = f"Hi {user_name}!\n"
         text += f"Welcome at the {RUNTIME_CONFIG.EVENT_CITY} First Saturday\n"
         text += f"Start event time: {RUNTIME_TIME.start_time().strftime('%H:%M %Z')}\n"

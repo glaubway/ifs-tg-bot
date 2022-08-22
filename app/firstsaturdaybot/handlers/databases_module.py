@@ -1,0 +1,38 @@
+from pymongo import MongoClient, errors
+from firstsaturdaybot.handlers.logger import myLogger
+
+logger = myLogger(__name__)
+
+class MongoDatabase():
+    mongo_url: str
+    mongo_client: MongoClient
+
+    def __init__(self, mongo_url: str, city: str) -> None:
+        self.mongo_url = mongo_url
+        try:
+            self.mongo_client = MongoClient(self.mongo_url)
+        except errors.ConnectionFailure as error:
+            logger.exception("Could not connect to the server.\n", error)
+              
+        self.db_name = self.mongo_client[f'IngressFirstSaturday{city}']
+        self.admins_col = self.db_name['admins']
+        self.users_col = self.db_name['users']
+        logger.info('DB inited successfully')
+    
+    def add_admin(self, username: str) -> None:
+        if self.admins_col.count_documents({'username': username}) == 0:
+            self.admins_col.insert_one({
+                'username': username
+            })
+    
+    def remove_admin(self, username: str) -> bool:
+        if self.admins_col.count_documents({'username': username}) == 1:
+            self.admins_col.delete_one({
+                'username': username
+            })
+            return True
+        return False
+
+    def show_all_admins(self) -> list:
+        admins = list(self.admins_col.find())
+        return [admin['username'] for admin in admins]

@@ -1,6 +1,8 @@
 from os import environ
 import logging
 
+logging_level: str
+
 if environ.get('LOGGING_LEVEL'):
     logging_level = environ.get('LOGGING_LEVEL')
 else:
@@ -11,5 +13,5 @@ logging.basicConfig(
     level=logging_level
 )
 
-def myLogger(app_name):
+def myLogger(app_name: str) -> logging:
     return logging.getLogger(app_name)
