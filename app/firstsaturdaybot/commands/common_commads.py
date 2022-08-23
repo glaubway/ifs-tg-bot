@@ -3,9 +3,9 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 async def unknown_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    if update.effective_chat.id:
-        await context.bot.send_message(chat_id=update.effective_chat.id, 
-                                       text="Sorry, I didn't understand that command.")
+    chat_id: int = update.effective_chat.id
+    text: str = "Sorry, I didn't understand that command."
+    await context.bot.send_message(chat_id=chat_id, text=text)
     return END
 
 async def stop_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -22,8 +22,10 @@ async def stop_nested_command(update: Update, context: ContextTypes.DEFAULT_TYPE
     return END
 
 async def invalid_button_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    text: int = "Sorry, I could not process this button click 😕\n"
+    text += "Please send /start to get a new keyboard."
     await update.callback_query.answer()
-    await update.callback_query.edit_message_text(text="Sorry, I could not process this button click 😕\nPlease send /start to get a new keyboard.")
+    await update.callback_query.edit_message_text(text=text)
 
 async def reply_message (conv_type: str, text: str, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if conv_type == "message":
