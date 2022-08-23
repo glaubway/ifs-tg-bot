@@ -6,8 +6,8 @@ import pytz
 logger = getLogger(__name__)
 
 class IFSEventTime:
-    EVENT_START_TIME: dict[int]
-    EVENT_END_TIME: dict[int]
+    EVENT_START_TIME: dict[str, int]
+    EVENT_END_TIME: dict[str, int]
     EVENT_TIMEZONE: tzinfo
     
     def __init__(self, timezone: str) -> None:
