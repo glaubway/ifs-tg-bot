@@ -1,7 +1,7 @@
+from logging import getLogger
 from pymongo import MongoClient, errors
-from firstsaturdaybot.handlers.logger import myLogger
 
-logger = myLogger(__name__)
+logger = getLogger(__name__)
 
 class IFSMongoDatabase:
     mongo_url: str
@@ -12,12 +12,11 @@ class IFSMongoDatabase:
         try:
             self.mongo_client = MongoClient(self.mongo_url)
         except errors.ConnectionFailure as error:
-            logger.exception("Could not connect to the server.\n", error)
+            raise error("Could not connect to the server.\n")
               
         self.db_name = self.mongo_client[f'IngressFirstSaturday{city}']
         self.admins_col = self.db_name['admins']
         self.users_col = self.db_name['users']
-        logger.info('DB inited successfully')
     
     def add_admin(self, username: str) -> None:
         if self.admins_col.count_documents({'username': username}) == 0:

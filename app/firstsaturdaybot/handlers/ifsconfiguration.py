@@ -1,7 +1,8 @@
-from firstsaturdaybot.handlers.logger import myLogger
 from os import environ
-
-logger = myLogger(__name__)
+from logging import (
+    basicConfig,
+    getLevelName
+)
 
 class IFSConfiguration:
     RUNTIME_ADMINS: list
@@ -15,7 +16,9 @@ class IFSConfiguration:
     MONGO_URL: str
     STATISTIC_FORM_LINK: str
     PORTAL_HUNT_SPREADSHEET_LINK: str
-    
+    EVENT_TIMEZONE: str
+    LOGGING_LEVEL: str
+
     def __init__(self) -> None:
         self.RUNTIME_ADMINS = []
         self.BOT_TOKEN = self.load_var_from_env('BOT_TOKEN')
@@ -24,10 +27,13 @@ class IFSConfiguration:
         self.EVENT_CITY = self.load_var_from_env('EVENT_CITY')
         self.EVENT_DATE_RESTRICTION = self.str2bool(self.load_var_from_env('EVENT_DATE_RESTRICTION'))
         self.EVENT_TIME_RESTRICTION = self.str2bool(self.load_var_from_env('EVENT_TIME_RESTRICTION'))
+        self.EVENT_TIMEZONE = self.load_var_from_env('EVENT_TIMEZONE')
         self.EVENT_LANGUAGE = self.load_var_from_env('EVENT_LANGUAGE')
         self.MONGO_URL = self.load_var_from_env('MONGO_URL')
         self.STATISTIC_FORM_LINK = ''
         self.PORTAL_HUNT_SPREADSHEET_LINK = ''
+        basicConfig(format='%(asctime)s - %(levelname)s - %(module)s - %(message)s', 
+                                      level=getLevelName(self.load_var_from_env('LOGGING_LEVEL')))
 
     def set_statistic_form_link (self, custom_link: str) -> bool:
         self.STATISTIC_FORM_LINK = custom_link
@@ -81,17 +87,6 @@ class IFSConfiguration:
         else:
             return self.GLOBAL_ADMINS
 
-    def load_var_from_env(self, env_name: str) -> str:
-        try:
-            if environ[env_name] == '':
-                logger.exception(f'Environment variable {env_name} didn\'t set correctly.\nPlease check .env file.')
-                raise TypeError
-            else:
-                return environ[env_name]
-        except KeyError as error:
-            logger.exception(f'Environment variable {env_name} didn\'t found.\nPlease check .env file.')
-            raise error
-
     def sync_admins_from_db(self, admins: list) -> None:
         if admins:
             self.RUNTIME_ADMINS = admins
@@ -103,3 +98,12 @@ class IFSConfiguration:
             return True
         else:
             return False
+
+    def load_var_from_env(self, env_name: str) -> str:
+        try:
+            if environ[env_name] == '':
+                raise TypeError(f'Environment variable {env_name} didn\' set correctly.\nPlease check .env file.')
+            else:
+                return environ[env_name]
+        except KeyError as error:
+            raise error(f'Environment variable {env_name} didn\' found.\nPlease check .env file.')

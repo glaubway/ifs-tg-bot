@@ -1,6 +1,6 @@
 from functools import wraps
-from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
-from firstsaturdaybot.handlers.logger import myLogger
+from logging import getLogger
+from firstsaturdaybot import IFSCONFIGURATION, IFSEVENTTIME
 from firstsaturdaybot.commands.common_commads import reply_message
 
 from telegram import (
@@ -10,7 +10,7 @@ from telegram.ext import (
     ContextTypes
     )
 
-logger = myLogger(__name__)
+logger = getLogger(__name__)
 
 def restricted_admin(func):
     @wraps(func)
@@ -28,7 +28,7 @@ def restricted_admin(func):
             user_id = update.callback_query.from_user.id
             conv_type = "callback"
         text = "Unauthorized access denied"
-        if not RUNTIME_CONFIG.is_user_admin(user_name):
+        if not IFSCONFIGURATION.is_user_admin(user_name):
             logger.warn(f"Unauthorized access denied for {user_name} {user_id}.")
             await reply_message(conv_type, text, update, context)
             return
@@ -49,11 +49,11 @@ def restricted_firstsaturday(func):
             conv_type = "callback"
         text = f"Hi {user_name}!\n"
         text += "Event hasn't been started yet or already ended, please retun to me at the first saturday of month."
-        if RUNTIME_CONFIG.EVENT_DATE_RESTRICTION and not RUNTIME_TIME.is_firstsaturday_today():
-            if RUNTIME_CONFIG.EVENT_TIME_RESTRICTION and not RUNTIME_TIME.is_event_time():
+        if IFSCONFIGURATION.EVENT_DATE_RESTRICTION and not IFSEVENTTIME.is_firstsaturday_today():
+            if IFSCONFIGURATION.EVENT_TIME_RESTRICTION and not IFSEVENTTIME.is_event_time():
                 await reply_message(conv_type, text, update, context)
                 return
-            elif RUNTIME_CONFIG.EVENT_TIME_RESTRICTION and RUNTIME_TIME.is_event_time():
+            elif IFSCONFIGURATION.EVENT_TIME_RESTRICTION and IFSEVENTTIME.is_event_time():
                 return await func(update, context, *args, **kwargs)
             else:
                 await reply_message(conv_type, text, update, context)

@@ -1,4 +1,4 @@
-from firstsaturdaybot import RUNTIME_CONFIG, RUNTIME_TIME
+from firstsaturdaybot import IFSCONFIGURATION, IFSEVENTTIME, IFSDATABASE
 from firstsaturdaybot.commands import *
 from firstsaturdaybot.handlers.security import restricted_firstsaturday
 
@@ -13,8 +13,6 @@ from telegram.ext import (
 from telegram.constants import (
     ParseMode
     )
-
-from typing import Union
 
 @restricted_firstsaturday
 async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> str:
@@ -44,11 +42,11 @@ async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE,
         user_name = update.callback_query.from_user.username
     if text == '':
         text = f"Hi {user_name}!\n"
-        text += f"Welcome at the {RUNTIME_CONFIG.EVENT_CITY} First Saturday\n"
-        text += f"Start event time: {RUNTIME_TIME.start_time().strftime('%H:%M %Z')}\n"
-        text += f"End event time: {RUNTIME_TIME.end_time().strftime('%H:%M %Z')}\n"
-        text += f"<a href='{RUNTIME_CONFIG.STATISTIC_FORM_LINK}'>Google form link</a>\n"
-        text += f"<a href='{RUNTIME_CONFIG.PORTAL_HUNT_SPREADSHEET_LINK}'>Portal Hunt spreadsheet link</a>\n"
+        text += f"Welcome at the {IFSCONFIGURATION.EVENT_CITY} First Saturday\n"
+        text += f"Start event time: {IFSEVENTTIME.start_time().strftime('%H:%M %Z')}\n"
+        text += f"End event time: {IFSEVENTTIME.end_time().strftime('%H:%M %Z')}\n"
+        text += f"<a href='{IFSCONFIGURATION.STATISTIC_FORM_LINK}'>Google form link</a>\n"
+        text += f"<a href='{IFSCONFIGURATION.PORTAL_HUNT_SPREADSHEET_LINK}'>Portal Hunt spreadsheet link</a>\n"
         text += "To abort, simply type /stop."
 
     if context.user_data.get(START_OVER):

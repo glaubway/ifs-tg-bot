@@ -1,23 +1,22 @@
+from logging import getLogger
 from calendar import monthcalendar
 from datetime import datetime
-from os import environ
 import pytz
-from firstsaturdaybot.handlers.logger import myLogger
 
-logger = myLogger(__name__)
+logger = getLogger(__name__)
 
 class IFSEventTime:
     EVENT_START_TIME: dict
     EVENT_END_TIME: dict
     EVENT_TIMEZONE: pytz
     
-    def __init__(self) -> None:
+    def __init__(self, timezone: str) -> None:
         self.EVENT_START_TIME = {"hour": 0, "minute": 00}
         self.EVENT_END_TIME = {"hour": 1, "minute": 00}
-        if pytz.timezone(self.load_var_from_env('EVENT_TIMEZONE')):
-            self.EVENT_TIMEZONE = pytz.timezone(self.load_var_from_env('EVENT_TIMEZONE'))
+        if pytz.timezone(timezone):
+            self.EVENT_TIMEZONE = pytz.timezone(timezone)
         else: 
-            logger.exception('Incorect timezone. Using UTC.')
+            logger.info('Incorect timezone. Using UTC.')
             self.EVENT_TIMEZONE = pytz.timezone('UTC')
 
     def right_now(self) -> datetime:
@@ -90,15 +89,3 @@ class IFSEventTime:
             return True
         else:
             return False
-        
-
-    def load_var_from_env(self, env_name: str) -> str:
-        try:
-            if environ[env_name] == '':
-                logger.exception(f'Environment variable {env_name} didn\' set correctly.\nPlease check .env file.')
-                raise TypeError
-            else:
-                return environ[env_name]
-        except KeyError as error:
-            logger.exception(f'Environment variable {env_name} didn\' found.\nPlease check .env file.')
-            raise error

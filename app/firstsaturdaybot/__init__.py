@@ -1,10 +1,9 @@
 from firstsaturdaybot.handlers.ifsconfiguration import IFSConfiguration
+IFSCONFIGURATION = IFSConfiguration()
 from firstsaturdaybot.handlers.ifseventtime import IFSEventTime
+IFSEVENTTIME = IFSEventTime(IFSCONFIGURATION.EVENT_TIMEZONE)
 from firstsaturdaybot.handlers.ifsmongodatabases import IFSMongoDatabase
-RUNTIME_CONFIG = IFSConfiguration()
-RUNTIME_TIME = IFSEventTime()
-RUNTIME_DATABASE = IFSMongoDatabase(RUNTIME_CONFIG.MONGO_URL, RUNTIME_CONFIG.EVENT_CITY)
-RUNTIME_CONFIG.sync_admins_from_db(RUNTIME_DATABASE.show_all_admins())
+IFSDATABASE = IFSMongoDatabase(IFSCONFIGURATION.MONGO_URL, IFSCONFIGURATION.EVENT_CITY)
 
 from firstsaturdaybot.conversation_handlers.admin_conversation import *
 from firstsaturdaybot.conversation_handlers.user_conversation import *
@@ -14,8 +13,9 @@ from telegram.ext import (
     )
 
 def main() -> None:
+    IFSCONFIGURATION.sync_admins_from_db(IFSDATABASE.show_all_admins())
     application = (ApplicationBuilder()
-        .token(RUNTIME_CONFIG.BOT_TOKEN)
+        .token(IFSCONFIGURATION.BOT_TOKEN)
         .build())
     application.add_handler(user_conversation_handler)
     application.add_handler(admin_conversation_handler)
