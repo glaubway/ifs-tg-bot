@@ -1,14 +1,12 @@
 from os import environ
-from logging import (
-    basicConfig,
-    getLevelName
-)
+from typing import List
+from logging import basicConfig, getLevelName
 
 class IFSConfiguration:
-    RUNTIME_ADMINS: list[str]
+    RUNTIME_ADMINS: List[str]
     BOT_TOKEN: str
     CHAT_ID: str
-    GLOBAL_ADMINS: list[str]
+    GLOBAL_ADMINS: List[str]
     EVENT_CITY: str
     EVENT_DATE_RESTRICTION: bool
     EVENT_TIME_RESTRICTION: bool
@@ -70,14 +68,12 @@ class IFSConfiguration:
     def is_user_admin(self, username: str) -> bool:
         if username in self.RUNTIME_ADMINS or username in self.GLOBAL_ADMINS:
             return True
-        else:
-            return False
+        return False
 
     def is_user_predefined_admin(self, username: str) -> bool:
         if username in self.GLOBAL_ADMINS:
             return True
-        else:
-            return False
+        return False
 
     def show_current_admins_as_string(self) -> str:
         if self.RUNTIME_ADMINS:
@@ -85,13 +81,13 @@ class IFSConfiguration:
         else:
             return '@' + ' @'.join(self.GLOBAL_ADMINS)
 
-    def show_current_admins_as_list(self) -> list[str]:
+    def show_current_admins_as_list(self) -> List[str]:
         if self.RUNTIME_ADMINS:
             return [*self.GLOBAL_ADMINS, *self.RUNTIME_ADMINS]
         else:
             return self.GLOBAL_ADMINS
 
-    def sync_admins_from_db(self, admins: list[str]) -> None:
+    def sync_admins_from_db(self, admins: List[str]) -> None:
         if admins:
             self.RUNTIME_ADMINS = admins
         else:
@@ -100,8 +96,7 @@ class IFSConfiguration:
     def str2bool(self, string: str) -> bool:
         if string in ["True", "true"]:
             return True
-        else:
-            return False
+        return False
 
     def load_var_from_env(self, env_name: str) -> str:
         try:

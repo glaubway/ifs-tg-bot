@@ -1,13 +1,14 @@
 from logging import getLogger
 from calendar import monthcalendar
 from datetime import datetime, tzinfo
+from typing import Dict
 import pytz
 
 logger = getLogger(__name__)
 
 class IFSEventTime:
-    EVENT_START_TIME: dict[str, int]
-    EVENT_END_TIME: dict[str, int]
+    EVENT_START_TIME: Dict[str, int]
+    EVENT_END_TIME: Dict[str, int]
     EVENT_TIMEZONE: tzinfo
     
     def __init__(self, timezone: str) -> None:
