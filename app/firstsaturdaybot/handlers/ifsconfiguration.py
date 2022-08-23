@@ -5,10 +5,10 @@ from logging import (
 )
 
 class IFSConfiguration:
-    RUNTIME_ADMINS: list
+    RUNTIME_ADMINS: list[str]
     BOT_TOKEN: str
     CHAT_ID: str
-    GLOBAL_ADMINS: list
+    GLOBAL_ADMINS: list[str]
     EVENT_CITY: str
     EVENT_DATE_RESTRICTION: bool
     EVENT_TIME_RESTRICTION: bool
@@ -35,7 +35,7 @@ class IFSConfiguration:
         basicConfig(format='%(asctime)s - %(levelname)s - %(module)s - %(message)s', 
                                       level=getLevelName(self.load_var_from_env('LOGGING_LEVEL')))
 
-    def set_statistic_form_link (self, custom_link: str) -> bool:
+    def set_statistic_form_link (self, custom_link: str) -> None:
         self.STATISTIC_FORM_LINK = custom_link
 
     def set_portal_hunt_spreadsheet_link (self, custom_link: str) -> None:
@@ -70,10 +70,14 @@ class IFSConfiguration:
     def is_user_admin(self, username: str) -> bool:
         if username in self.RUNTIME_ADMINS or username in self.GLOBAL_ADMINS:
             return True
+        else:
+            return False
 
     def is_user_predefined_admin(self, username: str) -> bool:
         if username in self.GLOBAL_ADMINS:
             return True
+        else:
+            return False
 
     def show_current_admins_as_string(self) -> str:
         if self.RUNTIME_ADMINS:
@@ -81,13 +85,13 @@ class IFSConfiguration:
         else:
             return '@' + ' @'.join(self.GLOBAL_ADMINS)
 
-    def show_current_admins_as_list(self) -> list:
+    def show_current_admins_as_list(self) -> list[str]:
         if self.RUNTIME_ADMINS:
             return [*self.GLOBAL_ADMINS, *self.RUNTIME_ADMINS]
         else:
             return self.GLOBAL_ADMINS
 
-    def sync_admins_from_db(self, admins: list) -> None:
+    def sync_admins_from_db(self, admins: list[str]) -> None:
         if admins:
             self.RUNTIME_ADMINS = admins
         else:
@@ -105,5 +109,5 @@ class IFSConfiguration:
                 raise TypeError(f'Environment variable {env_name} didn\' set correctly.\nPlease check .env file.')
             else:
                 return environ[env_name]
-        except KeyError as error:
-            raise error(f'Environment variable {env_name} didn\' found.\nPlease check .env file.')
+        except KeyError:
+            raise KeyError(f'Environment variable {env_name} didn\' found.\nPlease check .env file.')
