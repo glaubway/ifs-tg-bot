@@ -1,14 +1,14 @@
 from logging import getLogger
 from calendar import monthcalendar
-from datetime import datetime
+from datetime import datetime, tzinfo
 import pytz
 
 logger = getLogger(__name__)
 
 class IFSEventTime:
-    EVENT_START_TIME: dict
-    EVENT_END_TIME: dict
-    EVENT_TIMEZONE: pytz
+    EVENT_START_TIME: dict[int]
+    EVENT_END_TIME: dict[int]
+    EVENT_TIMEZONE: tzinfo
     
     def __init__(self, timezone: str) -> None:
         self.EVENT_START_TIME = {"hour": 0, "minute": 00}
@@ -22,7 +22,7 @@ class IFSEventTime:
     def right_now(self) -> datetime:
         return datetime.now(self.EVENT_TIMEZONE)
     
-    def first_saturday_of_month(self) -> datetime:
+    def first_saturday_of_month(self) -> int:
         year = self.right_now().year
         month = self.right_now().month
         if monthcalendar(year, month)[0][5] == 0:
