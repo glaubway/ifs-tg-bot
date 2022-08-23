@@ -20,4 +20,4 @@ jobs:
         pip install mypy
     - name: Analysing the code with mypy
       run: |
-        mypu --strict $(git ls-files '*.py')
+        mypy --strict $(git ls-files '*.py')
