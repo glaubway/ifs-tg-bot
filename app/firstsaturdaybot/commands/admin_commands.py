@@ -14,7 +14,6 @@ from telegram.constants import (
     ParseMode
     )
 
-
 @restricted_admin
 async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> str:
     user_name: str
@@ -40,7 +39,6 @@ async def admin_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE
         ]
     ]
     keyboard = InlineKeyboardMarkup(buttons)
-
 
     try:
         user_name = update.message.from_user.username

@@ -10,7 +10,12 @@ from telegram.ext import (
     CallbackQueryHandler)
 
 admin_conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler('configure', admin_start_command, filters=filters.ChatType.PRIVATE)],
+    entry_points=[
+        CommandHandler(
+            'configure', 
+            admin_start_command, 
+            filters=filters.ChatType.PRIVATE)
+            ],
     states={
         SHOW_CURRENT_CONFIGURATION: [
             CallbackQueryHandler(

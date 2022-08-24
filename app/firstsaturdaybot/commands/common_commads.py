@@ -3,9 +3,9 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 async def unknown_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    chat_id: int = update.effective_chat.id
+    assert update.effective_chat is not None
     text: str = "Sorry, I didn't understand that command."
-    await context.bot.send_message(chat_id=chat_id, text=text)
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=text)
     return END
 
 async def stop_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
