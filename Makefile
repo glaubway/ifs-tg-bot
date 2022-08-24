@@ -6,22 +6,22 @@ TAG=$(shell git rev-parse --short HEAD)
 .PHONY: build up start down destroy stop restart test
 
 build: 
-		@TAG=$(TAG) $(COMPOSE) -p $(PROJECT_NAME) build
+		@TAG=$(TAG) $(COMPOSE) --profile build -p $(PROJECT_NAME) build
 up:
-		@TAG=$(TAG) $(COMPOSE) -p $(PROJECT_NAME) up -d
+		@TAG=$(TAG) $(COMPOSE) --profile build -p $(PROJECT_NAME) up -d
 rebuild:
 		@make -s down
 		@make -s build
 		@make -s up
 down:
-		@TAG=$(TAG) $(COMPOSE) -p $(PROJECT_NAME) down
+		@TAG=$(TAG) $(COMPOSE) --profile build -p $(PROJECT_NAME) down
 destroy:
-		@TAG=$(TAG) $(COMPOSE) -p $(PROJECT_NAME) down -v
+		@TAG=$(TAG) $(COMPOSE) --profile build -p $(PROJECT_NAME) down -v
 stop:
-		@TAG=$(TAG) $(COMPOSE) -p $(PROJECT_NAME) stop
+		@TAG=$(TAG) $(COMPOSE) --profile build -p $(PROJECT_NAME) stop
 restart:
-		@TAG=$(TAG) $(COMPOSE) -p $(PROJECT_NAME) stop
-		@TAG=$(TAG) $(COMPOSE) -p $(PROJECT_NAME) up -d
+		@TAG=$(TAG) $(COMPOSE) --profile build -p $(PROJECT_NAME) stop
+		@TAG=$(TAG) $(COMPOSE) --profile build -p $(PROJECT_NAME) up -d
 test:
 		@TAG=$(TAG) $(COMPOSE) --profile tests -p $(PROJECT_NAME)-tests build
 		@TAG=$(TAG) $(COMPOSE) --profile tests -p $(PROJECT_NAME)-tests up -d
