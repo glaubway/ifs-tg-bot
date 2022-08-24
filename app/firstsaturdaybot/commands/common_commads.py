@@ -22,7 +22,7 @@ async def stop_nested_command(update: Update, context: ContextTypes.DEFAULT_TYPE
     return END
 
 async def invalid_button_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    text: int = "Sorry, I could not process this button click 😕\n"
+    text: str = "Sorry, I could not process this button click 😕\n"
     text += "Please send /start to get a new keyboard."
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(text=text)
