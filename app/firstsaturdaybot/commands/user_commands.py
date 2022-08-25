@@ -1,18 +1,26 @@
-from firstsaturdaybot import IFSCONFIGURATION, IFSEVENTTIME, IFSDATABASE
-from firstsaturdaybot.commands import *
+from firstsaturdaybot import IFSCONFIGURATION, IFSEVENTTIME
 from firstsaturdaybot.handlers.security import restricted_firstsaturday
-
+from firstsaturdaybot.commands import (
+    START_OVER,
+    STOP_CONVERSATION,
+    SELECTING_USER_ACTION,
+    SET_NICKNAME,
+    SET_LANGUAGE,
+    SHOW_PRIVACY_POLICY,
+    SEND_PHOTO
+)
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Update
-    )
+)
 from telegram.ext import (
     ContextTypes
-    )
+)
 from telegram.constants import (
     ParseMode
-    )
+)
+
 
 @restricted_firstsaturday
 async def user_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str = '') -> str:

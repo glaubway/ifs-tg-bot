@@ -6,7 +6,7 @@ from telegram.ext import ConversationHandler
     START_OVER,
     STOP_CONVERSATION,
     TO_START
-) = map(str, range(100,105))
+) = map(str, range(100, 105))
 
 (
     SELECTING_USER_ACTION,

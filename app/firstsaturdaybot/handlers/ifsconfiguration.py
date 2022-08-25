@@ -2,6 +2,7 @@ from os import environ
 from typing import List
 from logging import basicConfig, getLevelName
 
+
 class IFSConfiguration:
     RUNTIME_ADMINS: List[str]
     BOT_TOKEN: str
@@ -30,36 +31,36 @@ class IFSConfiguration:
         self.MONGO_URL = self.load_var_from_env('MONGO_URL')
         self.STATISTIC_FORM_LINK = ''
         self.PORTAL_HUNT_SPREADSHEET_LINK = ''
-        basicConfig(format='%(asctime)s - %(levelname)s - %(module)s - %(message)s', 
-                                      level=getLevelName(self.load_var_from_env('LOGGING_LEVEL')))
+        basicConfig(format='%(asctime)s - %(levelname)s - %(module)s - %(message)s',
+                    level=getLevelName(self.load_var_from_env('LOGGING_LEVEL')))
 
-    def set_statistic_form_link (self, custom_link: str) -> None:
+    def set_statistic_form_link(self, custom_link: str) -> None:
         self.STATISTIC_FORM_LINK = custom_link
 
-    def set_portal_hunt_spreadsheet_link (self, custom_link: str) -> None:
+    def set_portal_hunt_spreadsheet_link(self, custom_link: str) -> None:
         self.PORTAL_HUNT_SPREADSHEET_LINK = custom_link
 
-    def change_date_restriction (self) -> None:
+    def change_date_restriction(self) -> None:
         if self.EVENT_DATE_RESTRICTION:
             self.EVENT_DATE_RESTRICTION = False
             self.EVENT_TIME_RESTRICTION = False
         else:
             self.EVENT_DATE_RESTRICTION = True
 
-    def change_time_restriction (self) -> None:
+    def change_time_restriction(self) -> None:
         if self.EVENT_TIME_RESTRICTION:
             self.EVENT_TIME_RESTRICTION = False
         else:
             self.EVENT_TIME_RESTRICTION = True
             self.EVENT_DATE_RESTRICTION = True
 
-    def show_date_restriction (self) -> str:
+    def show_date_restriction(self) -> str:
         if self.EVENT_DATE_RESTRICTION:
             return "Enabled"
         else:
             return "Disabled"
 
-    def show_time_restriction (self) -> str:
+    def show_time_restriction(self) -> str:
         if self.EVENT_TIME_RESTRICTION:
             return "Enabled"
         else:

@@ -1,6 +1,6 @@
 FROM python:3.10-slim as base
 COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install --no-cache-dir -r requirements.txt
 WORKDIR /app
 COPY . /app
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
@@ -8,7 +8,9 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /
 FROM base as tests
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-RUN python -m pip install mypy
+RUN python -m pip install --no-cache-dir -U \
+    mypy \
+    flake8
 WORKDIR /app
 USER appuser
 CMD ["bash", "run.sh"]

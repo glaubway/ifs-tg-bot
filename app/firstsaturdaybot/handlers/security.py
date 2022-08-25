@@ -9,6 +9,7 @@ T = TypeVar('T', bound=Callable[..., Any])
 
 logger = getLogger(__name__)
 
+
 def restricted_admin(func: T) -> T:
     @wraps(func)
     async def wrapped(update: Update, context: ContextTypes.DEFAULT_TYPE, *args: Any, **kwargs: Any) -> Any:
@@ -27,6 +28,7 @@ def restricted_admin(func: T) -> T:
         return await func(update, context, *args, **kwargs)
     return cast(T, wrapped)
 
+
 def restricted_firstsaturday(func: T) -> T:
     @wraps(func)
     async def wrapped(update: Update, context: ContextTypes.DEFAULT_TYPE, *args: Any, **kwargs: Any) -> Any:
@@ -38,9 +40,9 @@ def restricted_firstsaturday(func: T) -> T:
             user_name = update.callback_query.from_user.username
         text: str = f"Hi {user_name}!\n"
         text += "Event hasn't been started yet or already ended, please retun to me at the first saturday of month."
-        if IFSCONFIGURATION.EVENT_DATE_RESTRICTION and not IFSEVENTTIME.is_firstsaturday_today(): # True False
+        if IFSCONFIGURATION.EVENT_DATE_RESTRICTION and not IFSEVENTTIME.is_firstsaturday_today():
             return await reply_message(conv_type, text, update, context)
-        if IFSCONFIGURATION.EVENT_TIME_RESTRICTION and not IFSEVENTTIME.is_event_time(): # True False
+        if IFSCONFIGURATION.EVENT_TIME_RESTRICTION and not IFSEVENTTIME.is_event_time():
             return await reply_message(conv_type, text, update, context)
         else:
             return await func(update, context, *args, **kwargs)
