@@ -33,4 +33,5 @@ user_conversation_handler = ConversationHandler(
             stop_nested_command,
             pattern=f"^{str(STOP_CONVERSATION)}$")
         ],
+    allow_reentry=True
 )

@@ -12,7 +12,8 @@ from firstsaturdaybot.conversation_handlers.user_conversation import (
     user_conversation_handler
 )
 from firstsaturdaybot.conversation_handlers.common_conversation import (
-    unknown_handler
+    unknown_command_handler,
+    unknown_keyboard_handler
 )
 from telegram.ext import (
     ApplicationBuilder
@@ -26,6 +27,7 @@ def main() -> None:
                    .build())
     application.add_handler(user_conversation_handler)
     application.add_handler(admin_conversation_handler)
-    application.add_handler(unknown_handler)
+    application.add_handler(unknown_command_handler)
+    application.add_handler(unknown_keyboard_handler)
 
     application.run_polling()
