@@ -109,13 +109,12 @@ async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     context.user_data[START_OVER] = True
     context.user_data[CURRENT_FEATURE] = update.callback_query.data
     NEXT_STAGE: str
-    buttons: list
+    buttons: list = []
     text: str
 
     if update.callback_query.data == str(ADD_ADMIN):
         text = "Please provide admin nickname which should be added\n"
         text += f"Current admins: {IFSCONFIGURATION.show_current_admins_as_string()}"
-        buttons = [[InlineKeyboardButton(text="Return Back", callback_data=str(TO_START))]]
         NEXT_STAGE = TYPING_ADD_ADMIN
     elif update.callback_query.data == str(REMOVE_ADMIN):
         text = "Please choose admin nickname which should be removed\n"
@@ -127,11 +126,11 @@ async def set_event_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
                         text=str(admin_nickname),
                         callback_data=str(admin_nickname))]
                 )
-        buttons.append([InlineKeyboardButton(text="Return Back", callback_data=str(TO_START))])
         NEXT_STAGE = TYPING_REMOVE_ADMIN
     else:
         return await incorrect_input(update, context)
 
+    buttons.append([InlineKeyboardButton(text="Return Back", callback_data=str(TO_START))])
     keyboard = InlineKeyboardMarkup(buttons)
 
     await update.callback_query.answer()
