@@ -1,7 +1,6 @@
 from firstsaturdaybot.commands.admin_commands import (
     admin_start_command,
     save_time_configuration,
-    incorrect_input,
     add_admin,
     remove_admin,
     save_link_configuration,
@@ -15,11 +14,10 @@ from firstsaturdaybot.commands.admin_commands import (
 )
 from firstsaturdaybot.commands.common_commads import (
     stop_command,
-    stop_nested_command
+    incorrect_input
 )
-from firstsaturdaybot.commands import (
+from firstsaturdaybot.handlers.ifsconstants import (
     STOP_CONVERSATION,
-    TO_START,
     SELECTING_ADMIN_ACTION,
     SET_START_EVENT_TIME,
     SET_END_EVENT_TIME,
@@ -58,17 +56,14 @@ admin_conversation_handler = ConversationHandler(
         SHOW_CURRENT_CONFIGURATION: [
             CallbackQueryHandler(
                 admin_start_command,
-                pattern="^" + str(TO_START) + "$")
+                pattern="^" + str(SELECTING_ADMIN_ACTION) + "$")
             ],
         SELECTING_ADMIN_ACTION: [
             CallbackQueryHandler(
-                stop_nested_command,
+                stop_command,
                 pattern="^" + str(STOP_CONVERSATION) + "$")
             ],
         TYPING_TIME_CONFIGURATION: [
-            CallbackQueryHandler(
-                admin_start_command,
-                pattern="^" + str(TO_START) + "$"),
             MessageHandler(
                 filters.Regex(r"^(([0-1]?[0-9])|([2][0-3]))\:[0-5]?[0-9]$"),
                 save_time_configuration),
@@ -77,9 +72,6 @@ admin_conversation_handler = ConversationHandler(
                 incorrect_input)
             ],
         TYPING_ADD_ADMIN: [
-            CallbackQueryHandler(
-                admin_start_command,
-                pattern="^" + str(TO_START) + "$"),
             MessageHandler(
                 filters.Regex(r"^[a-zA-Z0-9_]{5,}$"),
                 add_admin),
@@ -89,9 +81,6 @@ admin_conversation_handler = ConversationHandler(
             ],
         TYPING_REMOVE_ADMIN: [
             CallbackQueryHandler(
-                admin_start_command,
-                pattern="^" + str(TO_START) + "$"),
-            CallbackQueryHandler(
                 remove_admin,
                 pattern=r"^[a-zA-Z0-9_]{5,}$"),
             MessageHandler(
@@ -99,9 +88,6 @@ admin_conversation_handler = ConversationHandler(
                 incorrect_input)
             ],
         TYPING_STATISTIC_SPREADSHEET_LINK: [
-            CallbackQueryHandler(
-                admin_start_command,
-                pattern="^" + str(TO_START) + "$"),
             MessageHandler(
                 filters.Regex(r"^https:\/\/.*$"),
                 save_link_configuration),
@@ -110,9 +96,6 @@ admin_conversation_handler = ConversationHandler(
                 incorrect_input)
             ],
         TYPING_PORTAL_HUNT_SPREADSHEET_LINK: [
-            CallbackQueryHandler(
-                admin_start_command,
-                pattern="^" + str(TO_START) + "$"),
             MessageHandler(
                 filters.Regex(r"^https:\/\/.*$"),
                 save_link_configuration),
@@ -121,9 +104,6 @@ admin_conversation_handler = ConversationHandler(
                 incorrect_input)
             ],
         TYPING_EVENT_RESTRICTION: [
-            CallbackQueryHandler(
-                admin_start_command,
-                pattern="^" + str(TO_START) + "$"),
             CallbackQueryHandler(
                 change_date_restriction,
                 pattern="^" + str(CHANGE_DATE_RESTRICTION) + "$"),
@@ -140,6 +120,9 @@ admin_conversation_handler = ConversationHandler(
             "stop",
             stop_command),
         CallbackQueryHandler(
+            admin_start_command,
+            pattern="^" + str(SELECTING_ADMIN_ACTION) + "$"),
+        CallbackQueryHandler(
             set_event_time,
             pattern=f"^({str(SET_START_EVENT_TIME)}|{str(SET_END_EVENT_TIME)})$"),
         CallbackQueryHandler(
@@ -155,7 +138,7 @@ admin_conversation_handler = ConversationHandler(
             show_current_configuration,
             pattern=f"^{str(SHOW_CURRENT_CONFIGURATION)}$"),
         CallbackQueryHandler(
-            stop_nested_command,
+            stop_command,
             pattern=f"^{str(STOP_CONVERSATION)}$")
         ],
     allow_reentry=True
